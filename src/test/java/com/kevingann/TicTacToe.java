@@ -27,9 +27,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 
-public class AppTest {
+public class TicTacToe {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(AppTest.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(TicTacToe.class);
+
+  private static final Random RANDOM = new Random();
 
   private WebDriver webDriver;
   private WebDriverWait wait;
@@ -66,12 +68,10 @@ public class AppTest {
   private int myMoves = 0;
 
   @Test
-  public void shouldAnswerWithTrue() {
+  public void canBePlayedRandomly() {
     webDriver.navigate().to("https://playtictactoe.org/");
 
     wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By.cssSelector(".board"))));
-    Random random = new Random();
-
     wait.until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(".board .square"), 9));
 
     while (!isGameOver()) {
@@ -84,12 +84,10 @@ public class AppTest {
       List<WebElement> currentSquares = webDriver.findElements(By.cssSelector(".board .square"));
       List<WebElement> availableSquares = getAvailableSquares(currentSquares);
 
-      int availableSquareIndex = random.nextInt(availableSquares.size());
+      int availableSquareIndex = RANDOM.nextInt(availableSquares.size());
       WebElement randomSquare = availableSquares.get(availableSquareIndex);
 
-      do {
-        wait.until(ExpectedConditions.visibilityOf(randomSquare)).click();
-      } while (randomSquare.findElements(By.cssSelector(".x")).isEmpty());
+      wait.until(ExpectedConditions.visibilityOf(randomSquare)).click();
 
       wait.until(
           ExpectedConditions.numberOfElementsToBe(
@@ -97,6 +95,7 @@ public class AppTest {
       wait.until(
           ExpectedConditions.numberOfElementsToBe(
               By.cssSelector(".board .square .o"), computerMoves + 1));
+
       computerMoves++;
       myMoves++;
 
