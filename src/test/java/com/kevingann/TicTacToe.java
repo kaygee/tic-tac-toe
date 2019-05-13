@@ -71,30 +71,19 @@ public class TicTacToe {
   public void canBePlayedRandomly() {
     webDriver.navigate().to("https://playtictactoe.org/");
 
-    wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By.cssSelector(".board"))));
-    wait.until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(".board .square"), 9));
+    waitUntilBoardLoads();
 
     while (!isGameOver()) {
-      wait.until(
-          ExpectedConditions.numberOfElementsToBe(
-              By.cssSelector(".board .square .o"), computerMoves));
-      wait.until(
-          ExpectedConditions.numberOfElementsToBe(By.cssSelector(".board .square .x"), myMoves));
+      waitUntilMovesAppear();
 
-      List<WebElement> currentSquares = webDriver.findElements(By.cssSelector(".board .square"));
-      List<WebElement> availableSquares = getAvailableSquares(currentSquares);
+      List<WebElement> availableSquares =
+          getAvailableSquares(webDriver.findElements(By.cssSelector(".board .square")));
 
-      int availableSquareIndex = RANDOM.nextInt(availableSquares.size());
-      WebElement randomSquare = availableSquares.get(availableSquareIndex);
+      WebElement randomSquare = availableSquares.get(RANDOM.nextInt(availableSquares.size()));
 
       wait.until(ExpectedConditions.visibilityOf(randomSquare)).click();
 
-      wait.until(
-          ExpectedConditions.numberOfElementsToBe(
-              By.cssSelector(".board .square .x"), myMoves + 1));
-      wait.until(
-          ExpectedConditions.numberOfElementsToBe(
-              By.cssSelector(".board .square .o"), computerMoves + 1));
+      waitUntilMovesIncrement();
 
       computerMoves++;
       myMoves++;
@@ -105,6 +94,57 @@ public class TicTacToe {
                 .getText());
       }
     }
+  }
+
+  @Test
+  public void canBePlayedWithStrategery() {
+    webDriver.navigate().to("https://playtictactoe.org/");
+
+    waitUntilBoardLoads();
+
+    while (!isGameOver()) {
+      waitUntilMovesAppear();
+
+      List<WebElement> currentSquares = webDriver.findElements(By.cssSelector(".board .square"));
+      List<WebElement> availableSquares = getAvailableSquares(currentSquares);
+
+      int availableSquareIndex = RANDOM.nextInt(availableSquares.size());
+      WebElement randomSquare = availableSquares.get(availableSquareIndex);
+
+      wait.until(ExpectedConditions.visibilityOf(randomSquare)).click();
+
+      waitUntilMovesIncrement();
+
+      computerMoves++;
+      myMoves++;
+
+      if (isGameOver()) {
+        LOG.info(
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".scores")))
+                .getText());
+      }
+    }
+  }
+
+  private void waitUntilBoardLoads() {
+    wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By.cssSelector(".board"))));
+    wait.until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(".board .square"), 9));
+  }
+
+  private void waitUntilMovesIncrement() {
+    wait.until(
+        ExpectedConditions.numberOfElementsToBe(By.cssSelector(".board .square .x"), myMoves + 1));
+    wait.until(
+        ExpectedConditions.numberOfElementsToBe(
+            By.cssSelector(".board .square .o"), computerMoves + 1));
+  }
+
+  private void waitUntilMovesAppear() {
+    wait.until(
+        ExpectedConditions.numberOfElementsToBe(
+            By.cssSelector(".board .square .o"), computerMoves));
+    wait.until(
+        ExpectedConditions.numberOfElementsToBe(By.cssSelector(".board .square .x"), myMoves));
   }
 
   private List<WebElement> getAvailableSquares(List<WebElement> squares) {
