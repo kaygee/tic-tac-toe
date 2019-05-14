@@ -53,6 +53,7 @@ public class TicTacToe {
     LoggingPreferences logPrefs = new LoggingPreferences();
     logPrefs.enable(LogType.BROWSER, Level.ALL);
     chromeOptions.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+    
     webDriver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), chromeOptions);
 
     wait = new WebDriverWait(webDriver, 30, 1000);
@@ -64,14 +65,14 @@ public class TicTacToe {
     webDriver.quit();
   }
 
-  private int computerMoves = 0;
-  private int myMoves = 0;
-
   @Test
   public void canBePlayedRandomly() {
     webDriver.navigate().to("https://playtictactoe.org/");
 
     waitUntilBoardLoads();
+
+    int computerMoves = 0;
+    int myMoves = 0;
 
     while (!isGameOver()) {
       waitUntilMovesAppear();
@@ -96,6 +97,9 @@ public class TicTacToe {
     webDriver.navigate().to("https://playtictactoe.org/");
 
     waitUntilBoardLoads();
+
+    int computerMoves = 0;
+    int myMoves = 0;
 
     while (!isGameOver()) {
       waitUntilMovesAppear();
