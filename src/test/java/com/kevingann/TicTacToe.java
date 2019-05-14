@@ -87,13 +87,8 @@ public class TicTacToe {
 
       computerMoves++;
       myMoves++;
-
-      if (isGameOver()) {
-        LOG.info(
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".scores")))
-                .getText());
-      }
     }
+    logScore();
   }
 
   @Test
@@ -117,12 +112,15 @@ public class TicTacToe {
 
       computerMoves++;
       myMoves++;
+    }
+    logScore();
+  }
 
-      if (isGameOver()) {
-        LOG.info(
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".scores")))
-                .getText());
-      }
+  private void logScore() {
+    if (isGameOver()) {
+      LOG.info(
+          wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".scores")))
+              .getText());
     }
   }
 
