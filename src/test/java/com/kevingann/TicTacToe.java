@@ -53,7 +53,7 @@ public class TicTacToe {
     LoggingPreferences logPrefs = new LoggingPreferences();
     logPrefs.enable(LogType.BROWSER, Level.ALL);
     chromeOptions.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
-    
+
     webDriver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), chromeOptions);
 
     wait = new WebDriverWait(webDriver, 30, 1000);
@@ -75,7 +75,7 @@ public class TicTacToe {
     int myMoves = 0;
 
     while (!isGameOver()) {
-      waitUntilMovesAppear();
+      waitUntilMovesAppear(computerMoves, myMoves);
 
       List<WebElement> availableSquares =
           getAvailableSquares(webDriver.findElements(By.cssSelector(".board .square")));
@@ -84,7 +84,7 @@ public class TicTacToe {
 
       wait.until(ExpectedConditions.visibilityOf(randomSquare)).click();
 
-      waitUntilMovesIncrement();
+      waitUntilMovesIncrement(computerMoves, myMoves);
 
       computerMoves++;
       myMoves++;
@@ -102,7 +102,7 @@ public class TicTacToe {
     int myMoves = 0;
 
     while (!isGameOver()) {
-      waitUntilMovesAppear();
+      waitUntilMovesAppear(computerMoves, myMoves);
 
       List<WebElement> currentSquares = webDriver.findElements(By.cssSelector(".board .square"));
       List<WebElement> availableSquares = getAvailableSquares(currentSquares);
@@ -112,7 +112,7 @@ public class TicTacToe {
 
       wait.until(ExpectedConditions.visibilityOf(randomSquare)).click();
 
-      waitUntilMovesIncrement();
+      waitUntilMovesIncrement(computerMoves, myMoves);
 
       computerMoves++;
       myMoves++;
@@ -133,7 +133,7 @@ public class TicTacToe {
     wait.until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(".board .square"), 9));
   }
 
-  private void waitUntilMovesIncrement() {
+  private void waitUntilMovesIncrement(int computerMoves, int myMoves) {
     wait.until(
         ExpectedConditions.numberOfElementsToBe(By.cssSelector(".board .square .x"), myMoves + 1));
     wait.until(
@@ -141,7 +141,7 @@ public class TicTacToe {
             By.cssSelector(".board .square .o"), computerMoves + 1));
   }
 
-  private void waitUntilMovesAppear() {
+  private void waitUntilMovesAppear(int computerMoves, int myMoves) {
     wait.until(
         ExpectedConditions.numberOfElementsToBe(
             By.cssSelector(".board .square .o"), computerMoves));
